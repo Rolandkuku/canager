@@ -5,8 +5,11 @@
 */
 
 #include <stdio.h>
+#include "task.h"
 
 int main () {
-    char toto[] = "toto";
-    printf("%s\n", toto);
+    char toto[sizeof(char)*100];
+    Task task;
+    task.name = "My task";
+    printf("%s\n", task.name);
 }
