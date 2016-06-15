@@ -6,6 +6,7 @@
 #define CANAGER_TEAM_H
 
 #include <unistd.h>
+#include <dirent.h>
 
 int makingTeam() {
     printf("\n\n\n-- Team Menu --\n");
@@ -17,14 +18,32 @@ int makingTeam() {
     readInput(choice, 2);
     if (strncmp(choice, "1", 1) == 0) {
         // Créer une team
-        // TODO: Créer un nouveau fichier avec nommé d'après le nom de la team
+        // TODO: Vérifier l'existence d'un fichier avant de créer
         char * cwd;
         cwd = strcat(getcwd(0, 0), "/data/");
         printf("Name of the team : \n");
         char * file_name = malloc(sizeof(char)*50);
         fgets(file_name, sizeof(file_name), stdin);
         clean(file_name, stdin);
-        char * file_path = strcat(cwd, strcat(file_name, ".xml"));
+        file_name = strcat(file_name, ".xml");
+        // Look for other filenames
+        DIR * dp;
+        struct dirent * ep;
+        dp = opendir(cwd);
+        if (dp != NULL) {
+            while (ep =readdir(dp)) {
+                if (strcmp(file_name, ep->d_name) == 0) {
+                    printf("Team %s already exists !", file_name);
+                    return 1;
+                }
+            }
+            closedir(dp);
+        } else {
+            printf("Couldn't open directory");
+        }
+
+        // Creating new file
+        char * file_path = strcat(cwd, file_name);
         FILE* team_file = NULL;
         team_file = fopen(file_path, "w+");
         if (team_file != NULL) {
