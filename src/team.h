@@ -14,17 +14,19 @@ int makingTeam() {
     char *choice = malloc(sizeof(char)*2);
     readInput(choice, 2);
     if (strncmp(choice, "1", 1) == 0) {
-        // TODO: making teams;
+        // Créer une team
+        // TODO: Créer un nouveau fichier avec nommé d'après le nom de la team
     }
     else if (strncmp(choice, "2", 1) == 0) {
-        // TODO: making teammates
+        // Créer un teammate
+        // TODO: choisir parmis les fichier team celui de l'on veut puis y ajouter un teammate avec ses compétences
     }
     else if (strncmp(choice, "3", 1) == 0) {
-        // TODO: list teammates
+        // Lister les teammates
+        // TODO: choisir parmis les fichiers team et afficher le contenu
     }
     else if (strncmp(choice, "4", 1) == 0) {
         return 1;
     }
-    return 1;
 }
 #endif //CANAGER_TEAM_H
