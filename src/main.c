@@ -6,15 +6,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory.h>
 #include "data_struct.h"
+#include "functions.h"
+#include "team.h"
 
 int main () {
 
-    int mainTitle(int *p_running);
+    void mainTitle();
     int running = 1;
-    while (running != 0) {
-        mainTitle(&running);
-    }
+    mainTitle();
 
     return 0;
 }
@@ -22,30 +23,32 @@ int main () {
 // ************** FUNCTIONS ******************* //
 
 
-int mainTitle(int *p_running) {
+void mainTitle() {
+    char *choice = malloc(sizeof(char)*2);
     printf("-- Welcome -- \n");
     printf("1 - Make new team\n");
     printf("2 - Make new project\n");
     printf("3 - Exit\n");
-    char choice = "0";
-    printf("Your choice : ");
-    scanf(&choice);
-    printf("%d", choice);
+    printf("Your choice : \n");
+    readInput(choice, 2);
 
-    if (choice == (int) 1) {
+    if (strncmp(choice, "1", 1) == 0) {
         printf("Making a team !\n");
         // TODO: making team logic
+        if (makingTeam() == 1) {
+            mainTitle();
+        }
     }
-    else if (choice == (int) 2) {
+    else if (strncmp(choice, "2", 1) == 0) {
         printf("Making a project !\n");
         // TODO: making project logic
-    } else if (choice == (int) 3) {
-        printf("Exiting");
-        *p_running = 0;
-        return 0;
-    } else if (choice == (int) 0){
-        printf("Something went wrong\n");
+        mainTitle();
     }
-
-    return 0;
+    else if (strncmp(choice, "3", 1) == 0) {
+        printf("Exiting");
+    }
+    else {
+        printf("Something went wrong\n");
+        mainTitle();
+    }
 }

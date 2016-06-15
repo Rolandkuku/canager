@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(SOURCE_FILES
     src/main.c
     LICENSE
-    README.md src/data_struct.h src/functions.h)
+    README.md src/data_struct.h src/functions.h src/team.h src/team.h)
 
 include_directories(.)
 include_directories(bin)

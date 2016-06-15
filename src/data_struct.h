@@ -17,12 +17,19 @@ struct Task {
     int depedency_id;
 };
 
+typedef struct Team Team;
+struct Team {
+    int id;
+    char *name;
+};
+
 typedef struct Teammate Teammate;
 struct Teammate {
     int id;
     char *first_name;
     char *last_name;
     char *email;
+    int team_id;
     Skill skill;
 };
 
