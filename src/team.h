@@ -6,6 +6,7 @@
 #define CANAGER_TEAM_H
 
 int makeNewTeam();
+int makeNewTeammate();
 
 #include <unistd.h>
 #include <dirent.h>
@@ -26,6 +27,7 @@ int makingTeam() {
     else if (strncmp(choice, "2", 1) == 0) {
         // Créer un teammate
         // TODO: choisir parmis les fichier team celui de l'on veut puis y ajouter un teammate avec ses compétences
+        makeNewTeammate();
     }
     else if (strncmp(choice, "3", 1) == 0) {
         // Lister les teammates
@@ -34,6 +36,32 @@ int makingTeam() {
     else if (strncmp(choice, "4", 1) == 0) {
         return 1;
     }
+}
+
+int makeNewTeammate() {
+    int nb_files = 1;
+    char * files[100];
+    char * cwd;
+    cwd = strcat(getcwd(0, 0), "/data/");
+    DIR * dp;
+    struct dirent * ep;
+    dp = opendir(cwd);
+    if (dp != NULL) {
+        while(ep = readdir(dp)) {
+            files[nb_files] = ep->d_name;
+            nb_files++;
+        }
+    }
+    for(int i = 3; i < (nb_files); i++) { // Begin at 3 because of ./ and ../
+        printf("%d -> ", i-3);
+        printf("%s\n", files[i]);
+    }
+
+    char *chosenTeam = malloc(sizeof(char)*1);
+    printf("Select a team :");
+    readInput(chosenTeam, 2);
+    long filePosition = strtol(chosenTeam, NULL, 10);
+    printf("You have chosen %s", files[filePosition + 3]);
 }
 
 int makeNewTeam() {
@@ -49,7 +77,7 @@ int makeNewTeam() {
     struct dirent * ep;
     dp = opendir(cwd);
     if (dp != NULL) {
-        while (ep =readdir(dp)) {
+        while (ep = readdir(dp)) {
             if (strcmp(file_name, ep->d_name) == 0) {
                 printf("Team %s already exists !", file_name);
                 return 1;
