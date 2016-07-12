@@ -5,7 +5,7 @@
 #ifndef CANAGER_TEAM_H
 #define CANAGER_TEAM_H
 
-int makeNewTeam();
+void makeNewTeam();
 int makeNewTeammate();
 
 
@@ -13,10 +13,104 @@ int makeNewTeammate();
 #include <dirent.h>
 #include <libxml2/libxml/parser.h>
 #include <libxml2/libxml/tree.h>
+#include <libxml/encoding.h>
+#include <libxml/xmlwriter.h>
 #include <memory.h>
 #include "functions.h"
 
-void parseTeammate(xmlDocPtr pDoc, xmlNodePtr pNode);
+void printTeammate(xmlDocPtr pDoc, xmlNodePtr pNode);
+void listTeammates(xmlDocPtr doc);
+void parseTeammate(xmlDocPtr doc, xmlNodePtr cur, char *teammate);
+
+// ****************** Nanaging XML FILES *************** //
+
+void saveXmlDoc(xmlDocPtr doc, char *doc_name) {
+    if(doc != NULL) {
+        xmlSaveFormatFile(doc_name, doc, 1);
+    } else {
+        fprintf(stderr, "Unknown file");
+    }
+    return;
+}
+
+void createTeamFile(char *filename, char *file_path) {
+    int rc;
+    xmlTextWriterPtr writer;
+    xmlDocPtr doc;
+    xmlChar *tmp;
+
+
+    writer = xmlNewTextWriterDoc(&doc, 0);
+    if (writer == NULL) {
+        printf("makeNewTeam: Error creating the xml writer\n");
+        return;
+    }
+
+    // encoding
+    rc = xmlTextWriterStartDocument(writer, NULL, "UTF-8", NULL);
+    if (rc < 0) {
+        printf("makeNewTeam: Error at xmlTextWriterStartDocument\n");
+        return;
+    }
+    // start root element
+    rc = xmlTextWriterStartElement(writer, BAD_CAST "team");
+    if (rc < 0) {
+        printf("testXmlwriterFilename: Error at xmlTextWriterStartElement\n");
+        return;
+    }
+    // set team name
+    rc = xmlTextWriterWriteAttribute(writer, BAD_CAST "name", BAD_CAST filename);
+    if (rc < 0) {
+        printf("xmlTextWriterWriteAttribute: error while setting team name");
+    }
+    // ned root element
+    rc = xmlTextWriterEndElement(writer);
+    if (rc < 0) {
+        printf("testXmlwriterFilename: Error at xmlTextWriterStartElement\n");
+        return;
+    }
+    xmlFreeTextWriter(writer);
+    xmlSaveFileEnc(file_path, doc, "UTF-8");
+    xmlFreeDoc(doc);
+}
+
+// ****************** PARSING TEAMMATES ****************** //
+
+void createNewTeammate(xmlDocPtr doc, char *doc_name, char *name) {
+    xmlNodePtr cur;
+    xmlNodePtr new_node;
+    xmlAttrPtr new_attr;
+    cur = xmlDocGetRootElement(doc);
+    new_node = xmlNewTextChild(cur, NULL, "teammate", NULL);
+    new_attr = xmlNewProp(new_node, "name", name);
+}
+
+void listTeammates(xmlDocPtr doc) {
+    xmlNodePtr cur;
+    cur = xmlDocGetRootElement(doc);
+    cur = cur->xmlChildrenNode;
+    while(cur != NULL) {
+        if((!xmlStrcmp(cur->name, (const xmlChar *)"teammate"))) {
+            printTeammate(doc, cur);
+        }
+        cur = cur->next;
+    }
+}
+
+void printTeammate(xmlDocPtr doc, xmlNodePtr cur) {
+    xmlChar *teammate_name;
+    teammate_name = xmlGetProp(cur, "name");
+    printf("Name : %s\n", teammate_name);
+    xmlFree(teammate_name);
+    return;
+}
+
+void parseTeammate(xmlDocPtr doc, xmlNodePtr cur, char *teammate) {
+    xmlNewTextChild(cur, NULL, "teammate", teammate);
+    return;
+}
+
+//***************** END PARSING TEAMMATES ********* //
 
 int makingTeam() {
     printf("\n\n\n-- Team Menu --\n");
@@ -86,67 +180,30 @@ int makeNewTeammate() {
         xmlFreeDoc(doc);
     }
 
+    printf("Teammates already registered : \n\n");
+    listTeammates(doc);
 
-    cur = cur->xmlChildrenNode;
-    while(cur != NULL) {
-        if((!xmlStrcmp(cur->name, (const xmlChar *)"teammate"))) {
-            parseTeammate(doc, cur);
-        }
-        cur = cur->next;
-    }
+
+    printf("What is the name of the teammate ?    \n");
+    char *teammate_name = malloc(sizeof(char) * 50);
+    scanf("%s", teammate_name);
+    createNewTeammate(doc, file_path, teammate_name);
+    saveXmlDoc(doc, file_path);
+
+    printf("New teammate list : \n");
+    listTeammates(doc);
+    xmlFreeDoc(doc);
 }
 
-void parseTeammate(xmlDocPtr doc, xmlNodePtr cur) {
-    xmlChar *key;
-    cur = cur->xmlChildrenNode;
-    while (cur != NULL) {
-        if((!xmlStrcmp(cur->name, (const char *)"name"))) {
-            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            printf("Name : %s\n", key);
-            xmlFree(key);
-        }
-        cur = cur->next;
-    }
-    return;
-}
 
-int makeNewTeam() {
-    char * cwd;
-    cwd = strcat(getcwd(0, 0), "/data/");
+void makeNewTeam() {
+    char *filename = malloc(sizeof(char)*50);
+    char *file_path;
     printf("Name of the team : \n");
-    char * file_name = malloc(sizeof(char)*50);
-    fgets(file_name, sizeof(file_name), stdin);
-    clean(file_name, stdin);
-    file_name = strcat(file_name, ".xml");
-    // Look for other filenames
-    DIR * dp;
-    struct dirent * ep;
-    dp = opendir(cwd);
-    if (dp != NULL) {
-        while ((ep = readdir(dp))) {
-            if (strcmp(file_name, ep->d_name) == 0) {
-                printf("Team %s already exists !", file_name);
-                return 1;
-            }
-        }
-        closedir(dp);
-    } else {
-        printf("Couldn't open directory");
-        return 1;
-    }
+    scanf("%s", filename);
+    file_path = strcat(getcwd(0, 0), "/data/");
+    file_path = strcat(strcat(file_path, filename), ".xml");
 
-    // Creating new file
-    char * file_path = strcat(cwd, file_name);
-    FILE* team_file = NULL;
-    team_file = fopen(file_path, "w+");
-    if (team_file != NULL) {
-        fputs("<?xml version='1.0' encoding='UTF-8'?><team name='team_file></team>'", team_file);
-        printf("Created new file with the name : %s", file_name);
-        fclose(team_file);
-        return 0;
-    } else {
-        printf("Cannot open team file");
-        return 1;
-    }
+    createTeamFile(filename, file_path);
 }
 #endif //CANAGER_TEAM_H
