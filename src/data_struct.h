@@ -4,7 +4,7 @@
 
 typedef enum Skill Skill;
 enum Skill {
-   BACK, FRONT
+   BACK, FRONT, SELLS
 };
 
 typedef struct Task Task;
@@ -25,11 +25,9 @@ struct Team {
 
 typedef struct Teammate Teammate;
 struct Teammate {
-    int id;
-    char *first_name;
-    char *last_name;
-    char *email;
-    int team_id;
+    char first_name[51];
+    char last_name[51];
+    char email[51];
     Skill skill;
 };
 

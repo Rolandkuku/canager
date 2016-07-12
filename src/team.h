@@ -18,11 +18,11 @@ int makeNewTeammate();
 #include <memory.h>
 #include "functions.h"
 
-void printTeammate(xmlDocPtr pDoc, xmlNodePtr pNode);
+void printTeammate(xmlNodePtr pNode);
 void listTeammates(xmlDocPtr doc);
 void parseTeammate(xmlDocPtr doc, xmlNodePtr cur, char *teammate);
 
-// ****************** Nanaging XML FILES *************** //
+// ****************** Managing XML FILES *************** //
 
 void saveXmlDoc(xmlDocPtr doc, char *doc_name) {
     if(doc != NULL) {
@@ -76,13 +76,15 @@ void createTeamFile(char *filename, char *file_path) {
 
 // ****************** PARSING TEAMMATES ****************** //
 
-void createNewTeammate(xmlDocPtr doc, char *doc_name, char *name) {
+void xmlParseTeammate(xmlDocPtr doc, char *doc_name, Teammate *teammate) {
     xmlNodePtr cur;
     xmlNodePtr new_node;
     xmlAttrPtr new_attr;
     cur = xmlDocGetRootElement(doc);
     new_node = xmlNewTextChild(cur, NULL, "teammate", NULL);
-    new_attr = xmlNewProp(new_node, "name", name);
+    // last name
+    new_attr = xmlNewProp(new_node, "last_name", (const xmlChar *)teammate->last_name);
+    new_attr = xmlNewProp(new_node, "first_name", (const xmlChar *)teammate->first_name);
 }
 
 void listTeammates(xmlDocPtr doc) {
@@ -91,23 +93,55 @@ void listTeammates(xmlDocPtr doc) {
     cur = cur->xmlChildrenNode;
     while(cur != NULL) {
         if((!xmlStrcmp(cur->name, (const xmlChar *)"teammate"))) {
-            printTeammate(doc, cur);
+            printTeammate(cur);
         }
         cur = cur->next;
     }
 }
 
-void printTeammate(xmlDocPtr doc, xmlNodePtr cur) {
-    xmlChar *teammate_name;
-    teammate_name = xmlGetProp(cur, "name");
-    printf("Name : %s\n", teammate_name);
-    xmlFree(teammate_name);
+void printTeammate(xmlNodePtr cur) {
+    xmlChar *data;
+    data = xmlGetProp(cur, (const xmlChar *)"first_name");
+    printf("First Name : %s  ", data);
+    data = xmlGetProp(cur, (const xmlChar *)"last_name");
+    printf("Last Name : %s \n", data);
+    xmlFree(data);
     return;
 }
 
 void parseTeammate(xmlDocPtr doc, xmlNodePtr cur, char *teammate) {
     xmlNewTextChild(cur, NULL, "teammate", teammate);
     return;
+}
+
+void makeTeammate(Teammate *teammate) {
+    // First name
+    printf("/ /********** New Teammate *********/ /\n");
+    printf("First name :    \n");
+    scanf("%s", teammate->first_name);
+    // Last name
+    printf("Last name :    \n");
+    scanf("%s", teammate->last_name);
+    // Email
+    printf("Email :   \n");
+    scanf("%s", teammate->email);
+    // Skill
+    int skill;
+    printf("Which skill ? \n 1. BACK \n 2. FRONT \n 3. SELLS \n");
+    scanf("%d", &skill);
+    switch (skill) {
+        case 1 :
+            teammate->skill = BACK;
+            break;
+        case 2 :
+            teammate->skill = FRONT;
+            break;
+        case 3 :
+            teammate->skill = SELLS;
+        default:
+            // TODO return err;
+            break;
+    }
 }
 
 //***************** END PARSING TEAMMATES ********* //
@@ -183,11 +217,9 @@ int makeNewTeammate() {
     printf("Teammates already registered : \n\n");
     listTeammates(doc);
 
-
-    printf("What is the name of the teammate ?    \n");
-    char *teammate_name = malloc(sizeof(char) * 50);
-    scanf("%s", teammate_name);
-    createNewTeammate(doc, file_path, teammate_name);
+    Teammate teammate;
+    makeTeammate(&teammate);
+    xmlParseTeammate(doc, file_path, &teammate);
     saveXmlDoc(doc, file_path);
 
     printf("New teammate list : \n");
