@@ -127,20 +127,26 @@ void makeTeammate(Teammate *teammate) {
     scanf("%s", teammate->email);
     // Skill
     int skill;
-    printf("Which skill ? \n 1. BACK \n 2. FRONT \n 3. SELLS \n");
-    scanf("%d", &skill);
-    switch (skill) {
-        case 1 :
-            teammate->skill = BACK;
-            break;
-        case 2 :
-            teammate->skill = FRONT;
-            break;
-        case 3 :
-            teammate->skill = SELLS;
-        default:
-            // TODO return err;
-            break;
+    int correct_input = 0;
+    while (correct_input == 0) {
+        printf("Which skill ? \n 1. BACK \n 2. FRONT \n 3. SELLS \n");
+        scanf("%d", &skill);
+        switch (skill) {
+            case 1 :
+                teammate->skill = BACK;
+                correct_input = 1;
+                break;
+            case 2 :
+                teammate->skill = FRONT;
+                correct_input = 1;
+                break;
+            case 3 :
+                teammate->skill = SELLS;
+                correct_input = 1;
+            default:
+                // TODO return err;
+                break;
+        }
     }
 }
 
@@ -154,15 +160,38 @@ int makingTeam() {
     printf("3 - Return to main title\n");
     char *choice = malloc(sizeof(char)*2);
     readInput(choice, 2);
+
+    // Makin new team
     if (strncmp(choice, "1", 1) == 0) {
-        // Créer une team
-        // TODO: Vérifier l'existence d'un fichier avant de créer
         makeNewTeam();
+        int sub_choice = 0;
+        while (sub_choice != 1 || sub_choice != 2) {
+            printf("What do you want to do ?\n");
+            printf("1. Make another team.\n");
+            printf("2. Go back to team menu.\n");
+            scanf("%d", &sub_choice);
+            if (sub_choice == 1) {
+                makeNewTeam();
+            } else if (sub_choice == 2) {
+                return 1;
+            }
+        }
     }
+        // Making new teammate
     else if (strncmp(choice, "2", 1) == 0) {
-        // Créer un teammate
-        // TODO: choisir parmis les fichier team celui de l'on veut puis y ajouter un teammate avec ses compétences
         makeNewTeammate();
+        int sub_choice = 0;
+        while (sub_choice != 1 || sub_choice != 2) {
+            printf("What do you want to do ?\n");
+            printf("1. Make another teammate.\n");
+            printf("2. Go back to team menu.\n");
+            scanf("%d", &sub_choice);
+            if (sub_choice == 1) {
+                makeNewTeammate();
+            } else if (sub_choice == 2) {
+                return 1;
+            }
+        }
     }
     else if (strncmp(choice, "3", 1) == 0) {
         // Lister les teammates
