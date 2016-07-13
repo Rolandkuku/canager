@@ -1,6 +1,4 @@
 /*
-    Created by Renaud Bellec
-    
     Main file of Canager project
 */
 
@@ -10,6 +8,7 @@
 #include "data_struct.h"
 #include "functions.h"
 #include "team.h"
+#include "project.h"
 
 int main () {
 
@@ -34,14 +33,15 @@ void mainTitle() {
 
     if (strncmp(choice, "1", 1) == 0) {
         printf("Making a team !\n");
-        // TODO: making team logic
         if (makingTeam() == 1) {
             mainTitle();
         }
     }
     else if (strncmp(choice, "2", 1) == 0) {
         printf("Making a project !\n");
-        // TODO: making project logic
+        if (projectProg() == 1) {
+            mainTitle();
+        }
         mainTitle();
     }
     else if (strncmp(choice, "3", 1) == 0) {

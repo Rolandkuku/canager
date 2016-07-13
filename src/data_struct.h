@@ -9,12 +9,11 @@ enum Skill {
 
 typedef struct Task Task;
 struct Task {
-    int id;
-    char *name;
-    char *desc;
+    char name[51];
+    char desc[256];
     int duration;
     Skill skill;
-    int depedency_id;
+    char dependency[51];
 };
 
 typedef struct Team Team;
