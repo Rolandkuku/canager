@@ -3,6 +3,11 @@
 #ifndef CANAGER_PROJECT_H
 #define CANAGER_PROJECT_H
 
+#include <libxml2/libxml/parser.h>
+#include <libxml2/libxml/tree.h>
+#include <libxml/encoding.h>
+#include <libxml/xmlwriter.h>
+
 // *********** Declarations ******** //
 
 // main
@@ -12,6 +17,7 @@ char *chooseProject();
 void projectSubMenu();
 void createProject();
 void addTask();
+void xmlParseTask(xmlDocPtr doc, Task *task);
 void createProjectFile(char *filename, char *file_path);
 
 // ***************** XML FILES ********** //
@@ -157,13 +163,14 @@ char *chooseProject() {
 void xmlParseTask(xmlDocPtr doc, Task *task) {
     xmlNodePtr cur;
     xmlNodePtr new_node;
+    xmlAttrPtr new_attr;
     cur = xmlDocGetRootElement(doc);
     new_node = xmlNewTextChild(cur, NULL, "task", NULL);
-    xmlNewProp(new_node, "name", (const xmlChar *)task->name);
-    xmlNewProp(new_node, "desc", (const xmlChar *)task->desc);
-    xmlNewProp(new_node, "duration", (const xmlChar *)task->duration);
-    xmlNewProp(new_node, "skill", (const xmlChar *)task->skill);
-    xmlNewProp(new_node, "dependency", (const xmlChar *)task->dependency);
+    new_attr = xmlNewProp(new_node, "name", (const xmlChar *)task->name);
+    new_attr = xmlNewProp(new_node, "desc", (const xmlChar *)task->desc);
+    new_attr = xmlNewProp(new_node, "duration", (const xmlChar *)task->duration);
+    new_attr = xmlNewProp(new_node, "skill", (const xmlChar *)task->skill);
+    new_attr = xmlNewProp(new_node, "dependency", (const xmlChar *)task->dependency);
 }
 
 void makeTask(Task *task) {
@@ -181,14 +188,13 @@ void makeTask(Task *task) {
     printf("Dependency : \n");
     scanf("%s", task->dependency);
     // Skill
-    int skill_req;
+    int skill;
     int correct_input = 0;
     while (correct_input == 0) {
         printf("Which skill ? \n 1. BACK \n 2. FRONT \n 3. SELLS \n");
-        scanf("%d", &skill_req);
-        printf("toto");
-        printf("%d", skill_req);
-        switch (skill_req) {
+        clearBuffer();
+        scanf("%d", &skill);
+        switch (skill) {
             case 1 :
                 task->skill = BACK;
                 correct_input = 1;
@@ -206,6 +212,8 @@ void makeTask(Task *task) {
                 break;
         }
     }
+    clearBuffer();
+    printf("Task created.\n");
 }
 
 void addTask() {
@@ -232,7 +240,9 @@ void addTask() {
 
     Task task;
     makeTask(&task);
-    printf("Task created");
+
+    printf("** task created **");
+
     xmlParseTask(doc, &task);
     saveXmlDoc(doc, file_path);
     printf("Task saved. \n");

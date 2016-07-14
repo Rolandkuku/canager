@@ -12,8 +12,8 @@ struct Task {
     char name[51];
     char desc[256];
     int duration;
-    Skill skill;
     char dependency[51];
+    Skill skill;
 };
 
 typedef struct Team Team;
