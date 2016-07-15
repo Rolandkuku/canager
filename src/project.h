@@ -164,12 +164,14 @@ void xmlParseTask(xmlDocPtr doc, Task *task) {
     xmlNodePtr cur;
     xmlNodePtr new_node;
     xmlAttrPtr new_attr;
+    char *skill = parseSkill(task->skill);
     cur = xmlDocGetRootElement(doc);
     new_node = xmlNewTextChild(cur, NULL, "task", NULL);
     new_attr = xmlNewProp(new_node, "name", (const xmlChar *)task->name);
     new_attr = xmlNewProp(new_node, "desc", (const xmlChar *)task->desc);
+    printf(" ****** | %s | ******\n", skill);
     new_attr = xmlNewProp(new_node, "duration", (const xmlChar *)task->duration);
-    new_attr = xmlNewProp(new_node, "skill", (const xmlChar *)task->skill);
+    //new_attr = xmlNewProp(new_node, "skill", (const xmlChar *)skill);
     new_attr = xmlNewProp(new_node, "dependency", (const xmlChar *)task->dependency);
 }
 
@@ -183,7 +185,7 @@ void makeTask(Task *task) {
     scanf("%s", task->desc);
     // Duration
     printf("Duration : \n");
-    scanf("%d", &task->duration);
+    scanf("%s", task->duration);
     // Dependency
     printf("Dependency : \n");
     scanf("%s", task->dependency);

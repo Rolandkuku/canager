@@ -77,7 +77,7 @@ void xmlParseTeammate(xmlDocPtr doc, char *doc_name, Teammate *teammate) {
     xmlNewProp(new_node, "last_name", (const xmlChar *)teammate->last_name);
     xmlNewProp(new_node, "first_name", (const xmlChar *)teammate->first_name);
     xmlNewProp(new_node, "email", (const xmlChar *)teammate->email);
-    xmlNewProp(new_node, "skill", (const xmlChar*)teammate->skill);
+    xmlNewProp(new_node, "skill", (const xmlChar*)parseSkill(teammate->skill));
 }
 
 void listTeammates(xmlDocPtr doc) {
