@@ -24,14 +24,6 @@ void parseTeammate(xmlDocPtr doc, xmlNodePtr cur, char *teammate);
 
 // ****************** Managing XML FILES *************** //
 
-void saveXmlDoc(xmlDocPtr doc, char *doc_name) {
-    if(doc != NULL) {
-        xmlSaveFormatFile(doc_name, doc, 1);
-    } else {
-        fprintf(stderr, "Unknown file");
-    }
-    return;
-}
 
 void createTeamFile(char *filename, char *file_path) {
     int rc;
@@ -63,7 +55,7 @@ void createTeamFile(char *filename, char *file_path) {
     if (rc < 0) {
         printf("xmlTextWriterWriteAttribute: error while setting team name");
     }
-    // ned root element
+    // end root element
     rc = xmlTextWriterEndElement(writer);
     if (rc < 0) {
         printf("testXmlwriterFilename: Error at xmlTextWriterStartElement\n");
@@ -79,12 +71,13 @@ void createTeamFile(char *filename, char *file_path) {
 void xmlParseTeammate(xmlDocPtr doc, char *doc_name, Teammate *teammate) {
     xmlNodePtr cur;
     xmlNodePtr new_node;
-    xmlAttrPtr new_attr;
     cur = xmlDocGetRootElement(doc);
     new_node = xmlNewTextChild(cur, NULL, "teammate", NULL);
     // last name
-    new_attr = xmlNewProp(new_node, "last_name", (const xmlChar *)teammate->last_name);
-    new_attr = xmlNewProp(new_node, "first_name", (const xmlChar *)teammate->first_name);
+    xmlNewProp(new_node, "last_name", (const xmlChar *)teammate->last_name);
+    xmlNewProp(new_node, "first_name", (const xmlChar *)teammate->first_name);
+    xmlNewProp(new_node, "email", (const xmlChar *)teammate->email);
+    xmlNewProp(new_node, "skill", (const xmlChar*)parseSkill(teammate->skill));
 }
 
 void listTeammates(xmlDocPtr doc) {
@@ -156,8 +149,8 @@ int makingTeam() {
     printf("\n\n\n-- Team Menu --\n");
     printf("1 - New Team\n");
     printf("2 - New Teammate\n");
-    printf("2 - List Teammates\n");
-    printf("3 - Return to main title\n");
+    printf("3 - List Teammates\n");
+    printf("4 - Return to main title\n");
     char *choice = malloc(sizeof(char)*2);
     readInput(choice, 2);
 
@@ -206,7 +199,7 @@ int makeNewTeammate() {
     int nb_files = 1;
     char * files[100];
     char * cwd;
-    cwd = strcat(getcwd(0, 0), "/data/");
+    cwd = strcat(getcwd(0, 0), "/data/teams/");
     DIR * dp;
     struct dirent * ep;
     dp = opendir(cwd);
@@ -231,7 +224,7 @@ int makeNewTeammate() {
     xmlDocPtr doc;
     xmlNodePtr cur;
     char  *file_path;
-    file_path = strcat(getcwd(0, 0), "/data/");
+    file_path = strcat(getcwd(0, 0), "/data/teams/");
     strcat(file_path, chosenFile);
     doc =  xmlParseFile(file_path);
     if (doc == NULL) {
@@ -262,7 +255,7 @@ void makeNewTeam() {
     char *file_path;
     printf("Name of the team : \n");
     scanf("%s", filename);
-    file_path = strcat(getcwd(0, 0), "/data/");
+    file_path = strcat(getcwd(0, 0), "/data/teams/");
     file_path = strcat(strcat(file_path, filename), ".xml");
 
     createTeamFile(filename, file_path);
