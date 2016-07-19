@@ -18,7 +18,7 @@ char *parseSkill(Skill skill) {
         case SELLS :
             return "SELLS";
         default:
-            printf(stderr, "Wrong skill");
+            printf((const char *) stderr, "Wrong skill");
             return "//";
     }
 }

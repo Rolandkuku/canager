@@ -88,13 +88,7 @@ void getTeammate(xmlNodePtr cur,  Teammate *teammate) {
     data = xmlGetProp(cur, (const xmlChar *)"email");
     strcpy(teammate->email, (char *)data);
     data = xmlGetProp(cur, (const xmlChar *)"skill");
-    if (data == (xmlChar *)"BACK") {
-        teammate->skill = BACK;
-    } else if (data == (xmlChar *)"FRONT") {
-        teammate->skill = FRONT;
-    } else if (data == (xmlChar *)"SELLS") {
-        teammate->skill = SELLS;
-    }
+    teammate->skill = unParseSkill((char *)data);
     xmlFree(data);
 }
 
@@ -109,13 +103,7 @@ void getTask(xmlNodePtr cur, Task *task) {
     data = xmlGetProp(cur, (const xmlChar *)"dependency");
     strcpy(task->dependency, (const char *) data);
     data = xmlGetProp(cur, (const xmlChar *)"skill");
-    if (data == (xmlChar *)"BACK") {
-        task->skill = BACK;
-    } else if (data == (xmlChar *)"FRONT") {
-        task->skill = FRONT;
-    } else if (data == (xmlChar *)"SELLS") {
-        task->skill = SELLS;
-    }
+    task->skill = unParseSkill((char *)data);
     task->finishedBy = 0;
     xmlFree(data);
 }
@@ -169,6 +157,9 @@ void planningSecretReceip(Teammate *teammates, int nb_teammates, Task *tasks, in
     for (int i = 0; i < nb_teammates; i++) {
         strcpy(plannings[i].teammate_last_name, teammates[i].last_name);
         plannings[i].nb_tasks = 0;
+        for (int j = 0; j < 100; j++) {
+            plannings[i].tasks[j].finishedBy = 0;
+        }
     }
 
     while (count_tasks > 0) {
@@ -180,31 +171,34 @@ void planningSecretReceip(Teammate *teammates, int nb_teammates, Task *tasks, in
             // Iterate over all tasks
             for (int j = 0; j < nb_tasks; j++) {
                 // Is the tasks assignable ?
-                printf("task dependency : %s\n", tasks[j].dependency);
-                printf("task name : %s\n", tasks[j].name);
-                printf("in array : %d", in_array(tasks[j].dependency, tasks_done));
                 if ((strcmp(tasks[j].dependency, "none") == 0 || in_array(tasks[j].dependency, tasks_done) == 1)
-                    && in_array(tasks[i].name, tasks_done) == 0) {
+                    && in_array(tasks[j].name, tasks_done) == 0) {
                     printf("Task assignable\n");
                     // Is the teammate skilled for the task ?
-                    return;
+                    printf("teammate skill : %s | teammate name : %s\n", parseSkill(teammates[i].skill), teammates[i].last_name);
+                    printf("task skill : %s | task name : %s\n", parseSkill(tasks[j].skill), tasks[j].name);
                     if (strcmp(parseSkill(tasks[j].skill), parseSkill(teammates[i].skill)) == 0) {
+                        printf("The teammate has the skill we need\n");
                         for (int k = 0; k < nb_teammates; k++) {
                             // Looking for the current teammate in the plannings array
                             if (strcmp(teammates[i].last_name, plannings[k].teammate_last_name) == 0) {
+                                printf("found the teammate in plannings\n");
                                 int teammate_available = 1;
                                 // Looping over current teammate tasks
                                 int nb_current_teammate_tasks =
                                         sizeof(plannings[k].tasks) / sizeof(plannings[k].tasks[0]);
+                                printf("nb teammate tasks : %d\n", nb_current_teammate_tasks);
                                 for (int l = 0; l < nb_current_teammate_tasks; l++) {
                                     // Is the current teammate available ?
                                     if (plannings[k].tasks[l].finishedBy > time) {
+                                        printf("KESSTUFOULA ?\n");
                                         teammate_available = 0;
                                         break;
                                     }
                                 }
                                 // if the current teammate is available, we dance 'til we die
                                 if (teammate_available == 1) {
+                                    printf("Teammate is available\n");
                                     printf("assigning task\n");
                                     // Add task name to tasks done
                                     tasks_done[nb_tasks_done] = tasks[i].name;
@@ -222,6 +216,12 @@ void planningSecretReceip(Teammate *teammates, int nb_teammates, Task *tasks, in
                     }
                 }
             }
+        }
+    }
+    for (int i = 0; i < nb_teammates; i ++) {
+        printf("Teammate name : %s\n", plannings[i].teammate_last_name);
+        for (int j = 0; j < plannings[i].nb_tasks; j++) {
+            printf("Task assigned : %s\n", plannings[i].tasks[j].name);
         }
     }
 }
