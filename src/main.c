@@ -9,6 +9,7 @@
 #include "functions.h"
 #include "team.h"
 #include "project.h"
+#include "planning.h"
 
 int main () {
 
@@ -27,7 +28,8 @@ void mainTitle() {
     printf("-- Welcome -- \n");
     printf("1 - Make new team\n");
     printf("2 - Make new project\n");
-    printf("3 - Exit\n");
+    printf("3 - Make new planning\n");
+    printf("4 - Exit\n");
     printf("Your choice : \n");
     readInput(choice, 2);
 
@@ -45,7 +47,11 @@ void mainTitle() {
         mainTitle();
     }
     else if (strncmp(choice, "3", 1) == 0) {
+        planningProg();
+    }
+    else if (strncmp(choice, "4", 1) == 0) {
         printf("Exiting");
+        return;
     }
     else {
         printf("Something went wrong\n");

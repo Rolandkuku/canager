@@ -169,7 +169,6 @@ void xmlParseTask(xmlDocPtr doc, Task *task) {
     new_node = xmlNewTextChild(cur, NULL, "task", NULL);
     new_attr = xmlNewProp(new_node, "name", (const xmlChar *)task->name);
     new_attr = xmlNewProp(new_node, "desc", (const xmlChar *)task->desc);
-    printf(" ****** | %s | ******\n", skill);
     new_attr = xmlNewProp(new_node, "duration", (const xmlChar *)task->duration);
     //new_attr = xmlNewProp(new_node, "skill", (const xmlChar *)skill);
     new_attr = xmlNewProp(new_node, "dependency", (const xmlChar *)task->dependency);

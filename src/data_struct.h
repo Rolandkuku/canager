@@ -38,6 +38,7 @@ struct Task {
     char name[51];
     char desc[256];
     char duration[6];
+    int finishedBy;
     char dependency[51];
     Skill skill;
 };
@@ -54,5 +55,12 @@ struct Teammate {
     char last_name[51];
     char email[51];
     Skill skill;
+};
+
+typedef struct Planning Planning;
+struct Planning {
+    char teammate_last_name[51];
+    Task tasks[100];
+    int nb_tasks;
 };
 

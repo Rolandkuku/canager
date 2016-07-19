@@ -77,4 +77,17 @@ void getfilelist(char *path, char *files[1000], int *nb_files) {
     }
 }
 
+int in_array(char *string, char *arr[]) {
+    int arr_size = sizeof(arr)/ sizeof(arr[0]);
+    int in_array = 0;
+    for (int i = 0; i < arr_size; i++) {
+        if (strcmp(arr[i], string) == 0) {
+            in_array = 1;
+            break;
+        }
+    }
+    return in_array;
+}
+
+
 #endif //CANAGER_FUNCTIONS_H
