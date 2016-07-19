@@ -2,6 +2,11 @@
 #ifndef CANAGER_PLANNING_H
 #define CANAGER_PLANNING_H
 
+#include <libxml/HTMLtree.h>
+#include <libxml2/libxml/parser.h>
+#include <libxml2/libxml/tree.h>
+#include <libxml/encoding.h>
+#include <libxml/xmlwriter.h>
 
 /**
  * Return a team file path
@@ -142,10 +147,25 @@ void getTasks(xmlDocPtr doc, Task *tasks) {
     }
 }
 
+void parsePlannings(xmlDocPtr doc, Planning plannings[], int nb_plannings) {
+
+    xmlNodePtr cur;
+    xmlNodePtr new_node;
+    xmlAttrPtr new_attr;
+    cur = xmlDocGetRootElement(doc);
+    cur = cur->xmlChildrenNode;
+    while (cur != NULL) {
+        if ((!xmlStrcmp(cur->name, (const xmlChar *)"body"))){
+            new_node = xmlNewTextChild(cur, NULL, (const xmlChar *)"ul", NULL);
+        }
+        cur = cur->next;
+    }
+}
+
 /**
  * Create planning from team and project
  */
-void planningSecretReceip(Teammate *teammates, int nb_teammates, Task *tasks, int nb_tasks) {
+void planningSecretReciep(Teammate *teammates, int nb_teammates, Task *tasks, int nb_tasks) {
     //int nb_teammates = sizeof(teammates)/ sizeof(teammates[0]);
     //int nb_tasks= sizeof(tasks)/ sizeof(tasks[0]);
     int count_tasks = nb_tasks;
@@ -224,6 +244,69 @@ void planningSecretReceip(Teammate *teammates, int nb_teammates, Task *tasks, in
             printf("Task assigned : %s | task duration : %d\n", plannings[i].tasks[j].name, plannings[i].tasks[j].finishedBy);
         }
     }
+
+    char * file_name = malloc(sizeof(char)*51);
+    char * file_path;
+    printf("Name of the planning : \n");
+    scanf("%s", file_name);
+    file_path = strcat(strcat(strcat(getcwd(0, 0), "/data/plannings/"), file_name), ".html");
+    xmlChar xml_file_path = (xmlChar)file_path;
+    xmlDocPtr doc;
+    xmlTextWriterPtr writer;
+    int rc;
+
+    // ** Create planning doc ** //
+    writer = xmlNewTextWriterDoc(&doc, 0);
+    if (writer == NULL) {
+        printf("Create planning file: Error creating the xml writer\n");
+        return;
+    }
+    // HTML5 DOCTYPE
+    xmlTextWriterWriteDTD(writer, (xmlChar *)"html", NULL, NULL, NULL);
+    // start <html> root element
+    rc = xmlTextWriterStartElement(writer, BAD_CAST "html");
+    if (rc < 0) {
+        printf("<html> root element start: Error at xmlTextWriterStartElement\n");
+        return;
+    }
+    // start <head> element
+    rc = xmlTextWriterStartElement(writer, BAD_CAST "head");
+    if (rc < 0) {
+        printf("<head> element start: Error at xmlTextWriterStartElement\n");
+        return;
+    }
+    // end <head> element
+    rc = xmlTextWriterEndElement(writer);
+    if (rc < 0) {
+        printf("<head> element end: Error at xmlTextWriterStartElement\n");
+        return;
+    }
+    // start <body> element
+    rc = xmlTextWriterStartElement(writer, BAD_CAST "body");
+    if (rc < 0) {
+        printf("<head> element start: Error at xmlTextWriterStartElement\n");
+        return;
+    }
+    // end <body> element
+    rc = xmlTextWriterEndElement(writer);
+    if (rc < 0) {
+        printf("<head> element end: Error at xmlTextWriterStartElement\n");
+        return;
+    }
+    // end <html> root element
+    rc = xmlTextWriterEndElement(writer);
+    if (rc < 0) {
+        printf("<html> root element end: Error at xmlTextWriterStartElement\n");
+        return;
+    }
+    xmlFreeTextWriter(writer);
+
+    // ** Parsing planning ** //
+    parsePlannings(doc, plannings, nb_teammates);
+    htmlSaveFileFormat(file_path, doc, "UTF-8", NULL);
+
+    xmlFreeDoc(doc);
+
 }
 
 /**
@@ -259,7 +342,7 @@ void makePlanning() {
         printf("%s\n", tasks[i].name);
     }
 
-    planningSecretReceip(teammates, nb_teammates, tasks, nb_tasks);
+    planningSecretReciep(teammates, nb_teammates, tasks, nb_tasks);
 }
 
 

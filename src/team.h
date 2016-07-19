@@ -257,7 +257,7 @@ void makeNewTeam() {
     scanf("%s", filename);
     file_path = strcat(getcwd(0, 0), "/data/teams/");
     file_path = strcat(strcat(file_path, filename), ".xml");
-
     createTeamFile(filename, file_path);
+    free(filename);
 }
 #endif //CANAGER_TEAM_H
