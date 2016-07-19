@@ -164,7 +164,6 @@ void planningSecretReceip(Teammate *teammates, int nb_teammates, Task *tasks, in
 
     while (count_tasks > 0) {
         printf("entering while\n");
-        time++;
         // iterate over all teammates
         for (int i = 0; i < nb_teammates; i++) {
             printf("looping over teammates \n");
@@ -217,6 +216,7 @@ void planningSecretReceip(Teammate *teammates, int nb_teammates, Task *tasks, in
                 }
             }
         }
+        time++;
     }
     for (int i = 0; i < nb_teammates; i ++) {
         printf("Teammate name : %s\n", plannings[i].teammate_last_name);
