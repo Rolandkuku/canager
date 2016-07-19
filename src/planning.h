@@ -204,7 +204,7 @@ void planningSecretReceip(Teammate *teammates, int nb_teammates, Task *tasks, in
                                     tasks_done[nb_tasks_done] = tasks[j].name;
                                     nb_tasks_done++;
                                     // Set finish date
-                                    tasks[j].finishedBy = time + (int) tasks[j].duration;
+                                    tasks[j].finishedBy = time + (tasks[j].duration[0] - '0');
                                     // Copy task to current teammate planning
                                     plannings[k].tasks[plannings[k].nb_tasks] = tasks[j];
                                     plannings[k].nb_tasks++;
@@ -221,7 +221,7 @@ void planningSecretReceip(Teammate *teammates, int nb_teammates, Task *tasks, in
     for (int i = 0; i < nb_teammates; i ++) {
         printf("Teammate name : %s\n", plannings[i].teammate_last_name);
         for (int j = 0; j < plannings[i].nb_tasks; j++) {
-            printf("Task assigned : %s\n", plannings[i].tasks[j].name);
+            printf("Task assigned : %s | task duration : %d\n", plannings[i].tasks[j].name, plannings[i].tasks[j].finishedBy);
         }
     }
 }
