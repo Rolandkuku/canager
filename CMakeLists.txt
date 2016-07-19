@@ -8,7 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(SOURCE_FILES
     src/main.c
     LICENSE
-    README.md src/data_struct.h src/functions.h src/team.h src/project.h)
+    README.md src/data_struct.h src/functions.h src/team.h src/project.h src/planning.h)
 
 
 add_executable(canager ${SOURCE_FILES} src/main.c)
