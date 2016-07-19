@@ -201,12 +201,12 @@ void planningSecretReceip(Teammate *teammates, int nb_teammates, Task *tasks, in
                                     printf("Teammate is available\n");
                                     printf("assigning task\n");
                                     // Add task name to tasks done
-                                    tasks_done[nb_tasks_done] = tasks[i].name;
+                                    tasks_done[nb_tasks_done] = tasks[j].name;
                                     nb_tasks_done++;
                                     // Set finish date
-                                    tasks[i].finishedBy = time + (int) tasks[i].duration;
+                                    tasks[j].finishedBy = time + (int) tasks[j].duration;
                                     // Copy task to current teammate planning
-                                    tasks[i] = plannings[k].tasks[plannings[k].nb_tasks];
+                                    plannings[k].tasks[plannings[k].nb_tasks] = tasks[j];
                                     plannings[k].nb_tasks++;
                                     // Adjust tasks left
                                     count_tasks--;
