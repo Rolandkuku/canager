@@ -147,18 +147,45 @@ void getTasks(xmlDocPtr doc, Task *tasks) {
     }
 }
 
+void parsePlanning(xmlDocPtr doc, Planning planning) {
+    xmlNodePtr  cur;
+    xmlNodePtr new_task;
+    cur = xmlDocGetRootElement(doc);
+    for (int i = 0; i < planning.nb_tasks; i++) {
+        new_task = xmlNewTextChild(cur, NULL, (const xmlChar *)"li", (const xmlChar *)planning.tasks[i].name);
+    }
+}
+
+/**
+ * Parse all plannings
+ */
 void parsePlannings(xmlDocPtr doc, Planning plannings[], int nb_plannings) {
 
     xmlNodePtr cur;
-    xmlNodePtr new_node;
-    xmlAttrPtr new_attr;
-    cur = xmlDocGetRootElement(doc);
-    cur = cur->xmlChildrenNode;
-    while (cur != NULL) {
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"body"))){
-            new_node = xmlNewTextChild(cur, NULL, (const xmlChar *)"ul", NULL);
+    for (int i = 0; i < nb_plannings; i++) {
+        cur = xmlDocGetRootElement(doc);
+        cur = cur->xmlChildrenNode;
+        while (cur != NULL) {
+            if ((!xmlStrcmp(cur->name, (const xmlChar *)"body"))){
+                xmlNodePtr new_list;
+                xmlNewTextChild(cur, NULL, (const xmlChar *)"h4", (const xmlChar *)plannings[i].teammate_last_name);
+                new_list = xmlNewTextChild(cur, NULL, (const xmlChar *)"ul", NULL);
+                if (plannings[i].nb_tasks == 0) {
+                    xmlNewTextChild(new_list, NULL, (const xmlChar *)"li", (const xmlChar *)"This user has no task");
+                } else {
+                    for (int j = 0; j < plannings[i].nb_tasks; j++) {
+                        xmlNodePtr new_task;
+                        new_task = xmlNewTextChild(new_list, NULL, (const xmlChar *)"li", (const xmlChar *)plannings[i].tasks[j].name);
+                        xmlNewProp(
+                                new_task,
+                                (const xmlChar *)"data-duration",
+                                (const xmlChar *)plannings[i].tasks[j].duration
+                        );
+                    }
+                }
+            }
+            cur = cur->next;
         }
-        cur = cur->next;
     }
 }
 
