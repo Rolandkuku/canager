@@ -176,10 +176,12 @@ void parsePlannings(xmlDocPtr doc, Planning plannings[], int nb_plannings) {
                     for (int j = 0; j < plannings[i].nb_tasks; j++) {
                         xmlNodePtr new_task;
                         new_task = xmlNewTextChild(new_list, NULL, (const xmlChar *)"li", (const xmlChar *)plannings[i].tasks[j].name);
+                        char fb[6];
+                        sprintf(fb, "%d", plannings[i].tasks[i].finishedBy);
                         xmlNewProp(
                                 new_task,
                                 (const xmlChar *)"data-duration",
-                                (const xmlChar *)plannings[i].tasks[j].duration
+                                (const xmlChar *)fb
                         );
                     }
                 }
@@ -256,7 +258,9 @@ void planningSecretReciep(Teammate *teammates, int nb_teammates, Task *tasks, in
                                     tasks_done[nb_tasks_done] = tasks[j].name;
                                     nb_tasks_done++;
                                     // Set finish date
-                                    tasks[j].finishedBy = time + (tasks[j].duration[0] - '0');
+                                    int finished = time + (tasks[j].duration[0] - '0');
+                                    tasks[j].finishedBy = finished;
+                                    //tasks[j].time = sprintf()
                                     // Copy task to current teammate planning
                                     plannings[k].tasks[plannings[k].nb_tasks] = tasks[j];
                                     plannings[k].nb_tasks++;
