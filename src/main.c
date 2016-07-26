@@ -14,7 +14,6 @@
 int main () {
 
     void mainTitle();
-    int running = 1;
     mainTitle();
 
     return 0;
@@ -25,22 +24,20 @@ int main () {
 
 void mainTitle() {
     char *choice = malloc(sizeof(char)*2);
-    printf("-- Welcome -- \n");
-    printf("1 - Make new team\n");
-    printf("2 - Make new project\n");
-    printf("3 - Make new planning\n");
+    printf("-- Canager -- \n");
+    printf("1 - Team management\n");
+    printf("2 - Project management\n");
+    printf("3 - Planning management\n");
     printf("4 - Exit\n");
     printf("Your choice : \n");
     readInput(choice, 2);
 
     if (strncmp(choice, "1", 1) == 0) {
-        printf("Making a team !\n");
         if (makingTeam() == 1) {
             mainTitle();
         }
     }
     else if (strncmp(choice, "2", 1) == 0) {
-        printf("Making a project !\n");
         if (projectProg() == 1) {
             mainTitle();
         }

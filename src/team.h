@@ -149,8 +149,7 @@ int makingTeam() {
     printf("\n\n\n-- Team Menu --\n");
     printf("1 - New Team\n");
     printf("2 - New Teammate\n");
-    printf("3 - List Teammates\n");
-    printf("4 - Return to main title\n");
+    printf("3 - Return to main title\n");
     char *choice = malloc(sizeof(char)*2);
     readInput(choice, 2);
 
@@ -187,10 +186,6 @@ int makingTeam() {
         }
     }
     else if (strncmp(choice, "3", 1) == 0) {
-        // Lister les teammates
-        // TODO: choisir parmis les fichiers team et afficher le contenu
-    }
-    else if (strncmp(choice, "4", 1) == 0) {
         return 1;
     }
 }

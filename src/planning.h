@@ -197,6 +197,9 @@ void planningSecretReciep(Teammate *teammates, int nb_teammates, Task *tasks, in
     //int nb_tasks= sizeof(tasks)/ sizeof(tasks[0]);
     int count_tasks = nb_tasks;
     char *tasks_done[nb_tasks];
+    for (int o = 0; o < nb_tasks; o++) {
+        tasks_done[o] = "";
+    }
     int nb_tasks_done = 0;
     int time = 0;
     Planning plannings[nb_teammates];
@@ -216,9 +219,13 @@ void planningSecretReciep(Teammate *teammates, int nb_teammates, Task *tasks, in
             printf("looping over teammates \n");
             // Iterate over all tasks
             for (int j = 0; j < nb_tasks; j++) {
+                printf("%s\n", tasks[j].dependency);
+                for (int o = 0; o < nb_tasks; o++) {
+                    printf("tasks done : %s", tasks_done[o]);
+                }
                 // Is the tasks assignable ?
-                if ((strcmp(tasks[j].dependency, "none") == 0 || in_array(tasks[j].dependency, tasks_done) == 1)
-                    && in_array(tasks[j].name, tasks_done) == 0) {
+                if ((strcmp(tasks[j].dependency, "none") == 0 && in_array(tasks[j].name, tasks_done, nb_tasks) == 0) ||
+                    (in_array(tasks[j].dependency, tasks_done, nb_tasks) == 1) && in_array(tasks[j].name, tasks_done, nb_tasks) == 0) {
                     printf("Task assignable\n");
                     // Is the teammate skilled for the task ?
                     printf("teammate skill : %s | teammate name : %s\n", parseSkill(teammates[i].skill), teammates[i].last_name);
@@ -237,7 +244,6 @@ void planningSecretReciep(Teammate *teammates, int nb_teammates, Task *tasks, in
                                 for (int l = 0; l < nb_current_teammate_tasks; l++) {
                                     // Is the current teammate available ?
                                     if (plannings[k].tasks[l].finishedBy > time) {
-                                        printf("KESSTUFOULA ?\n");
                                         teammate_available = 0;
                                         break;
                                     }
