@@ -175,18 +175,36 @@ void parsePlannings(xmlDocPtr doc, Planning plannings[], int nb_plannings) {
                 } else {
                     for (int j = 0; j < plannings[i].nb_tasks; j++) {
                         xmlNodePtr new_task;
-                        new_task = xmlNewTextChild(new_list, NULL, (const xmlChar *)"li", (const xmlChar *)strcat(strcat(plannings[i].tasks[j].name, " - "), (const char *) plannings[i].tasks[j].desc));
                         char fb[6];
                         char * style[200];
                         strcat(style, "border:1px solid #000000; padding-left:");
                         sprintf(fb, "%d", plannings[i].tasks[j].finishedBy);
                         strcat(style, (const char *) fb);
                         strcat(style, "0px;");
+                        new_task = xmlNewTextChild(
+                                new_list, NULL, (const xmlChar *)"li",
+                                (const xmlChar *)strcat(
+                                        strcat(
+                                                strcat(
+                                                        strcat(plannings[i].tasks[j].name, " - "),
+                                                        (const char *) plannings[i].tasks[j].desc),
+                                               " - Estimated end : "),
+                                        (const char *) fb));
                         //strcat(strcat("border:1px solid #000000; margin-right:", strcat(fb, 0)), "px;");
                         xmlNewProp(
                                 new_task,
                                 (const xmlChar *)"style",
                                 (const xmlChar *)style
+                        );
+                        xmlNewProp(
+                                new_task,
+                                (const xmlChar *)"data-duration",
+                                (const xmlChar *)plannings[i].tasks[j].duration
+                        );
+                        xmlNewProp(
+                                new_task,
+                                (const xmlChar *)"data-estimatedend",
+                                (const xmlChar *)fb
                         );
                     }
                 }
